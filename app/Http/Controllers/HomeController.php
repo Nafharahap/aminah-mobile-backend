@@ -7,7 +7,7 @@ use App\Models\Funding;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $fundings = Funding::where('is_finished', '0')->active()->inRandomOrder()->limit(2)->get();
         foreach ($fundings as $funding) {
@@ -23,6 +23,14 @@ class HomeController extends Controller
             'active' => 'home',
             'mitra' => $fundings,
         );
+
+        if ($request->is('api/*')) {
+            if ($data) {
+                return $this->makeJson('Berhasil mengajukan pendanaan');
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
 
         return view('pages/landingpage/home', $data);
     }

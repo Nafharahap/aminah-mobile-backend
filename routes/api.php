@@ -3,8 +3,10 @@
 use App\Http\Controllers\Api\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BorrowerController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\LenderController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------

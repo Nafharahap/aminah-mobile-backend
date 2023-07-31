@@ -6,6 +6,8 @@ use App\Models\Funding;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\FundingLender;
+use App\Models\Lender;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -154,6 +156,8 @@ class CartController extends Controller
             return redirect()->route('cart.list');
         }
 
+        $userLender = User::with(['lender'])->where('id', $userID)->first();
+
         foreach ($cartItems as $cartItem) {
             $sub_total = floatval($cartItem->quantity) * floatval(env('HARGA_UNIT', 100000));
             $funding_id = $cartItem->id;
@@ -163,7 +167,7 @@ class CartController extends Controller
             $fundingLender = new FundingLender();
             $fundingLender->status = 'waiting';
             $fundingLender->funding_id = $funding_id;
-            $fundingLender->lender_id = $userID;
+            $fundingLender->lender_id = $userLender->lender->id;
             $fundingLender->lender_user_id = $userID;
             $fundingLender->amount = $sub_total;
             $fundingLender->unit_amount = $cartItem->quantity;

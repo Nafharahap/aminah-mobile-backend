@@ -21,7 +21,7 @@ class BorrowerController extends Controller
         $user = User::with('latestBorrower')->find($id);
         $pengajuan = Borrower::where('email', Auth::user()->email)->latest()->first();
         $borrowers = Borrower::where('email', Auth::user()->email)->get();
-        $fundings = Funding::whereIn('borrower_id', $borrowers->pluck('id'))->get();
+        $fundings = Funding::with(['fundinglenders.lender.user'])->whereIn('borrower_id', $borrowers->pluck('id'))->get();
 
         $data = array(
             'title' => "Aminah | Profile",
@@ -143,19 +143,37 @@ class BorrowerController extends Controller
         }
     }
 
-    public function withdrawal()
+    public function withdrawal(Request $request)
     {
         if (Auth::user()->borrowerAmount() == 0) {
+            if ($request->is('api/*')) {
+                return $this->makeJson('Saldo anda kosong', false, 400);
+            }
+
             return redirect('/mitra/profile')
                 ->with([
                     'error' => 'Saldo anda kosong'
                 ]);
         }
 
+        $borrowerAmount = Auth::user()->borrowerAmount();
+        $latestBorrower = Auth::user()->latestBorrower;
+
         $data = array(
             'title' => "Aminah | Invoice Penarikan dana",
             'active' => 'profile',
+            'borrowerAmount' => $borrowerAmount,
+            'latestBorrower' => $latestBorrower,
         );
+
+        if ($request->is('api/*')) {
+            if ($data) {
+                return $this->makeJson($data);
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
+
         return view('pages.borrower.invoice', $data);
     }
 
@@ -188,6 +206,14 @@ class BorrowerController extends Controller
         $transaction->recepient_bank_name = $bankName;
         $saving = $transaction->save();
 
+        if ($request->is('api/*')) {
+            if ($saving) {
+                return $this->makeJson('Berhasil mengajukan permintaan penarikan saldo');
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
+
         if ($saving) {
             return redirect('/mitra/profile')
                 ->with([
@@ -203,10 +229,14 @@ class BorrowerController extends Controller
         }
     }
 
-    public function returnFunding(Funding $funding)
+    public function returnFunding(Request $request, Funding $funding)
     {
         // block disini kalo akses data orang lain
         if ($funding->borrower->user->id != Auth::user()->id) {
+            if ($request->is('api/*')) {
+                return $this->makeJson('Maaf, anda berusaha akses data orang lain', false, 400);
+            }
+
             return redirect('/mitra/profile')
                 ->with([
                     'error' => 'Maaf, anda berusaha akses data orang lain'
@@ -220,19 +250,36 @@ class BorrowerController extends Controller
             'funding' => $funding,
             'transactions' => $transactions,
         );
+
+        if ($request->is('api/*')) {
+            if ($data) {
+                return $this->makeJson($data);
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
+
         return view('pages.borrower.return_funding', $data);
     }
 
-    public function returnFundingDetail($trx_hash)
+    public function returnFundingDetail(Request $request, $trx_hash)
     {
         $transaction = Transaction::where('trx_hash', $trx_hash)->where('transaction_type', '7')->first();
         if (!$transaction) {
+            if ($request->is('api/*')) {
+                return $this->makeJson('Maaf, data transaksi tidak ditemukan', false, 400);
+            }
+
             return redirect('/mitra/profile')
                 ->with([
                     'error' => 'Maaf, data transaksi tidak ditemukan'
                 ]);
         }
         if ($transaction->user_id != Auth::user()->id) {
+            if ($request->is('api/*')) {
+                return $this->makeJson('Maaf, anda berusaha akses data orang lain', false, 400);
+            }
+
             return redirect('/mitra/profile')
                 ->with([
                     'error' => 'Maaf, anda berusaha akses data orang lain'
@@ -247,6 +294,15 @@ class BorrowerController extends Controller
             'transaction' => $transaction,
             'bankAccounts' => $bankAccounts,
         );
+
+        if ($request->is('api/*')) {
+            if ($data) {
+                return $this->makeJson($data);
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
+
         return view('pages.borrower.return_funding_detail', $data);
     }
 
@@ -262,6 +318,10 @@ class BorrowerController extends Controller
         $transaction = Transaction::where('trx_hash', $trx_hash)->first();
 
         if (!$transaction) {
+            if ($request->is('api/*')) {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+
             return redirect()->back()->withErrors('Gagal')->withInput();
         }
 
@@ -274,6 +334,14 @@ class BorrowerController extends Controller
         $transaction->status = 'waiting approval';
         $transaction->file_image = $fileName;
         $saving = $transaction->save();
+
+        if ($request->is('api/*')) {
+            if ($saving) {
+                return $this->makeJson('Berhasil upload bukti pembayaran');
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
 
         if ($saving) {
             return redirect()

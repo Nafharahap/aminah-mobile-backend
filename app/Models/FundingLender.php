@@ -33,7 +33,7 @@ class FundingLender extends Model
 
     public function lender()
     {
-        return $this->belongsTo(Lender::class, 'id', 'lender_id');
+        return $this->belongsTo(Lender::class, 'lender_id', 'id');
     }
 
     public function funding()

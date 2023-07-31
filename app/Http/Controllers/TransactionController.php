@@ -19,20 +19,30 @@ class TransactionController extends Controller
         return view('pages.transaction.invoice', $data);
     }
 
-    public function pay()
+    public function pay(Request $request)
     {
-        $user_id = Auth::user()->id;
+        $lenderRecharge = Auth::user()->lenderRecharge;
         // dd(Auth::user()->lenderRecharge);
 
         $data = array(
             'title' => 'Aminah | Pembayaran',
             'active' => 'profile',
             'page' => 'Pembayaran',
+            'lenderRecharge' => $lenderRecharge
         );
+
+        if ($request->is('api/*')) {
+            if ($data) {
+                return $this->makeJson($data);
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
+
         return view('pages.lender.dompet.pay', $data);
     }
 
-    public function payDetail($hash)
+    public function payDetail(Request $request, $hash)
     {
         $transaction = Transaction::where('trx_hash', $hash)->first();
         if (!$transaction) {
@@ -48,6 +58,15 @@ class TransactionController extends Controller
             'transaction' => $transaction,
             'bankAccounts' => $bankAccounts,
         );
+
+        if ($request->is('api/*')) {
+            if ($data) {
+                return $this->makeJson($data);
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
+
         return view('pages.lender.dompet.pay_detail', $data);
     }
 
@@ -63,6 +82,10 @@ class TransactionController extends Controller
         $transaction = Transaction::where('trx_hash', $trx_hash)->first();
 
         if (!$transaction) {
+            if ($request->is('api/*')) {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+
             return redirect()->back()->withErrors('Gagal')->withInput();
         }
 
@@ -75,6 +98,14 @@ class TransactionController extends Controller
         $transaction->status = 'pending';
         $transaction->file_image = $fileName;
         $saving = $transaction->save();
+
+        if ($request->is('api/*')) {
+            if ($saving) {
+                return $this->makeJson('Berhasil upload bukti pembayaran');
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
 
         if ($saving) {
             return redirect()
@@ -116,6 +147,14 @@ class TransactionController extends Controller
         $transaction->transaction_datetime = now();
         $transaction->transaction_amount = $nominal;
         $saving = $transaction->save();
+
+        if ($request->is('api/*')) {
+            if ($saving) {
+                return $this->makeJson('Segera lakukan pembayaran');
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
 
         if ($saving) {
             return redirect()

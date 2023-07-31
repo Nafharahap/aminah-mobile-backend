@@ -76,7 +76,7 @@ class LenderController extends Controller
 
         return view('pages.lender.mitra', $data);
     }
-    public function detailMitra(Funding $funding)
+    public function detailMitra(Funding $funding, Request $request)
     {
         // dd($funding);
         // dd($borrower->fundings[0]->accepted_fund);
@@ -94,10 +94,18 @@ class LenderController extends Controller
             'funding' => $funding,
         );
 
+        if ($request->is('api/*')) {
+            if ($data) {
+                return $this->makeJson($data);
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
+
         return view('pages.lender.mitra.detail', $data);
     }
 
-    public function profile()
+    public function profile(Request $request)
     {
         $userID = Auth::user()->id;
         $user = User::with('lender')->find($userID);
@@ -109,6 +117,14 @@ class LenderController extends Controller
             'user' => $user,
             'userFundings' => $userFundings,
         );
+
+        if ($request->is('api/*')) {
+            if ($data) {
+                return $this->makeJson($data);
+            } else {
+                return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+            }
+        }
 
         return view('pages.lender.profile.index', $data);
     }
