@@ -7,16 +7,16 @@
     <title>Masukkan Password Baru</title>
 
     <!-- Favicons -->
-    <link href="{{ asset('') }}/img/Logo-Aminah-03.png" rel="icon">
+    <link href="{{ asset('/img/Logo-Aminah-03.png') }}" rel="icon">
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('') }}/admin/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('/admin/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="{{ asset('') }}/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('') }}/admin/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="{{ asset('/admin/dist/css/adminlte.min.css') }}">
 
     <style>
         .login-page {
@@ -41,7 +41,7 @@
             <div class="card-body login-card-body">
                 <div class="login-logo mt-0 mb-0">
                     <a href="/">
-                        <img src="{{ asset('') }}/img/Logo-Aminah-03.png" width="50" alt="">
+                        <img src="{{ asset('/img/Logo-Aminah-03.png') }}" width="50" alt="">
                         <h4 class="login-box-msg">Ubah Password</h4>
                     </a>
                 </div>
@@ -80,11 +80,11 @@
     <!-- /.login-box -->
 
     <!-- jQuery -->
-    <script src="{{ asset('') }}/admin/plugins/jquery/jquery.min.js"></script>
+    <script src="{{ asset('/admin/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
-    <script src="{{ asset('') }}/admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('/admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
-    <script src="{{ asset('') }}/admin/dist/js/adminlte.min.js"></script>
+    <script src="{{ asset('/admin/dist/js/adminlte.min.js') }}"></script>
 </body>
 
 </html>
