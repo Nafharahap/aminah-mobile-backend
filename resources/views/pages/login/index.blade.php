@@ -45,7 +45,7 @@
             <h4 class="login-box-msg">LOGIN</h4>
           </a>
         </div>
-        <form action="/admin/login" method="POST">
+        <form action="/login" method="POST">
           @csrf
           <label for="email">Email</label>
           <div class="input-group mb-3">

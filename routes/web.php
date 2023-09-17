@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\KeuanganController as AdminKeuanganController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminController;
@@ -36,11 +35,12 @@ use App\Http\Controllers\TransactionController;
 //     return view('dashboard');
 // })->middleware(['auth'])->name('dashboard');
 
-require __DIR__ . '/auth.php';
+// require __DIR__ . '/auth.php';
 
-// login admin
-Route::get('/admin/login', [LoginController::class, 'login_admin'])->name('admin.login');
-Route::post('/admin/login', [AuthenticatedSessionController::class, 'store']);
+// login
+Route::get('/login', [LoginController::class, 'index']);
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 // register borrower
 Route::get('/mitra/daftar', [RegisterController::class, 'registerBorrower']);
@@ -50,34 +50,44 @@ Route::post('/mitra/daftar', [RegisterController::class, 'storeBorrower']);
 Route::get('/register', [RegisterController::class, 'registerLender']);
 Route::post('/lender/daftar', [RegisterController::class, 'storeLender']);
 
-// admin
-Route::middleware('admin')->group(function () {
-    // dashboard
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    // user
-    Route::get('/admin/user', [UserController::class, 'index'])->name('admin.user');
-    Route::get('admin/user/tambah', [UserController::class, 'createAdmin'])->name('admin.user.tambah');
-    Route::post('admin/tambah', [UserController::class, 'store'])->name('admin.tambah');
-    // pengajuan
-    Route::get('/admin/pengajuan', [PengajuanController::class, 'index'])->name('admin.borrower');
-    Route::get('/admin/pengajuan/detail/{borrower}', [PengajuanController::class, 'detail'])->name('admin.borrower.detail');
-    Route::post('/admin/pengajuan/terima', [PengajuanController::class, 'approve'])->name('admin.borrower.approve');
-    Route::post('/admin/pengajuan/tolak', [PengajuanController::class, 'reject'])->name('admin.borrower.reject');
-    // data mitra
-    Route::get('/admin/mitra', [MitraController::class, 'index'])->name('admin.partner');
-    Route::get('/admin/mitra/detail/{borrower}', [MitraController::class, 'detail'])->name('admin.partner.detail');
-    Route::delete('/admin/mitra/hapus', [MitraController::class, 'destroy'])->name('admin.partner.destroy');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/tentang-kami', [HomeController::class, 'about']);
+Route::get('/cara-kerja', [HomeController::class, 'how_to_work']);
+Route::get('/forgot-password', [LoginController::class, 'forgot_password']);
+Route::get('/recovery-password', [LoginController::class, 'recovery_password']);
 
-    Route::get('/admin/pendanaan', [PendanaanController::class, 'index'])->name('admin.funding');
-    Route::get('/admin/rincian-pendanaan/detail/{funding}', [PendanaanController::class, 'detail']);
-    Route::get('/admin/transaksi', [KeuanganController::class, 'index']);
-    Route::get('/admin/transaksi/detail/{trx_hash}', [KeuanganController::class, 'detail']);
-    Route::post('/admin/transaksi/terima', [KeuanganController::class, 'approve']);
-    Route::post('/admin/transaksi/tolak', [KeuanganController::class, 'reject']);
+Route::get('/rincian-pendanaan/detail', [AdminController::class, 'detail_rincian_pendanaan']);
+Route::get('/data-keuangan', [AdminController::class, 'data_keuangan']);
+Route::get('/data-keuangan/detail', [AdminController::class, 'detail_keuangan']);
+
+// admin
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    // dashboard
+    Route::get('/administrator/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    // user
+    Route::get('/administrator/user', [UserController::class, 'index'])->name('admin.user');
+    Route::get('/administrator/user/tambah', [UserController::class, 'createAdmin'])->name('admin.user.tambah');
+    Route::post('/administrator/tambah', [UserController::class, 'store'])->name('admin.tambah');
+    // pengajuan
+    Route::get('/administrator/pengajuan', [PengajuanController::class, 'index'])->name('admin.borrower');
+    Route::get('/administrator/pengajuan/detail/{borrower}', [PengajuanController::class, 'detail'])->name('admin.borrower.detail');
+    Route::post('/administrator/pengajuan/terima', [PengajuanController::class, 'approve'])->name('admin.borrower.approve');
+    Route::post('/administrator/pengajuan/tolak', [PengajuanController::class, 'reject'])->name('admin.borrower.reject');
+    // data mitra
+    Route::get('/administrator/mitra', [MitraController::class, 'index'])->name('admin.partner');
+    Route::get('/administrator/mitra/detail/{borrower}', [MitraController::class, 'detail'])->name('admin.partner.detail');
+    Route::delete('/administrator/mitra/hapus', [MitraController::class, 'destroy'])->name('admin.partner.destroy');
+
+    Route::get('/administrator/pendanaan', [PendanaanController::class, 'index'])->name('admin.funding');
+    Route::get('/administrator/rincian-pendanaan/detail/{funding}', [PendanaanController::class, 'detail']);
+    Route::get('/administrator/transaksi', [KeuanganController::class, 'index']);
+    Route::get('/administrator/transaksi/detail/{trx_hash}', [KeuanganController::class, 'detail']);
+    Route::post('/administrator/transaksi/terima', [KeuanganController::class, 'approve']);
+    Route::post('/administrator/transaksi/tolak', [KeuanganController::class, 'reject']);
 });
 
 // mitra
-Route::middleware('borrower')->group(function () {
+Route::middleware(['auth', 'isBorrower'])->group(function () {
     Route::get('/mitra/profile', [BorrowerController::class, 'index'])->name('borrower.profile');
     Route::get('/mitra/profile/ajukan-pendanaan', [BorrowerController::class, 'pengajuan_pendanaan'])->name('borrower.profile.ajukan-pendanaan');
     Route::post('/mitra/pengajuan', [BorrowerController::class, 'storeBorrower']);
@@ -89,7 +99,7 @@ Route::middleware('borrower')->group(function () {
 });
 
 // lender
-Route::middleware('lender')->group(function () {
+Route::middleware(['auth', 'isLender'])->group(function () {
     Route::get('/lender/home', [LenderController::class, 'index'])->name('lender');
     Route::get('/lender/profile', [LenderController::class, 'profile'])->name('lender.profile');
     Route::get('/lender/mitra', [LenderController::class, 'mitra'])->name('lender.mitra');
@@ -115,14 +125,3 @@ Route::middleware('lender')->group(function () {
     Route::get('/lender/dompet/bayar/detail/{trx_hash}', [TransactionController::class, 'payDetail'])->name('lender.recharge.detail');
     Route::post('/lender/dompet/bayar', [TransactionController::class, 'payStore'])->name('lender.recharge.pay.store');
 });
-
-Route::get('/', [HomeController::class, 'index']);
-Route::get('/tentang-kami', [HomeController::class, 'about']);
-Route::get('/cara-kerja', [HomeController::class, 'how_to_work']);
-Route::get('/login', [LoginController::class, 'index']);
-Route::get('/forgot-password', [LoginController::class, 'forgot_password']);
-Route::get('/recovery-password', [LoginController::class, 'recovery_password']);
-
-Route::get('/rincian-pendanaan/detail', [AdminController::class, 'detail_rincian_pendanaan']);
-Route::get('/data-keuangan', [AdminController::class, 'data_keuangan']);
-Route::get('/data-keuangan/detail', [AdminController::class, 'detail_keuangan']);

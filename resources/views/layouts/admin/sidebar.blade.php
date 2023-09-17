@@ -1,7 +1,7 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="/admin/pengajuan" class="brand-link">
+    <a href="/administrator/pengajuan" class="brand-link">
         <img src="{{ asset('img/Aminah1.png') }}" alt="Aminah Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Aminah</span>
     </a>
@@ -34,7 +34,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="/admin/pengajuan" class="nav-link {{ isset($active) && $active == 'pengajuan' ? 'active' : '' }}">
+                    <a href="/administrator/pengajuan" class="nav-link {{ isset($active) && $active == 'pengajuan' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Data Pengajuan
@@ -43,7 +43,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/pendanaan" class="nav-link {{ isset($active) && $active == 'pendanaan' ? 'active' : '' }}">
+                    <a href="/administrator/pendanaan" class="nav-link {{ isset($active) && $active == 'pendanaan' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-chart-pie"></i>
                         <p>
                             Data Rincian Pendanaan
@@ -51,7 +51,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/mitra" class="nav-link {{ isset($active) && $active == 'mitra' ? 'active' : '' }}">
+                    <a href="/administrator/mitra" class="nav-link {{ isset($active) && $active == 'mitra' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
                             Data Mitra
@@ -59,7 +59,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/transaksi" class="nav-link {{ isset($active) && $active == 'keuangan' ? 'active' : '' }}">
+                    <a href="/administrator/transaksi" class="nav-link {{ isset($active) && $active == 'keuangan' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-copy"></i>
                         <p>
                             Data Keuangan Aminah
@@ -68,7 +68,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/user" class="nav-link {{ isset($active) && $active == 'user' ? 'active' : '' }}">
+                    <a href="/administrator/user" class="nav-link {{ isset($active) && $active == 'user' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
                             Data Admin

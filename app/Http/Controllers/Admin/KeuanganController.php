@@ -47,7 +47,7 @@ class KeuanganController extends Controller
         $transaction = Transaction::where('trx_hash', $trx_id)->first();
 
         if (!$transaction) {
-            return redirect()->to('admin/transaksi')->withErrors('Data tidak ditemukan');
+            return redirect()->to('administrator/transaksi')->withErrors('Data tidak ditemukan');
         }
 
         $data = array(
@@ -67,7 +67,7 @@ class KeuanganController extends Controller
         $transaction = Transaction::where('trx_hash', $trx_id)->first();
 
         if (!$transaction) {
-            return redirect()->to('admin/transaksi')->withErrors('Data tidak ditemukan');
+            return redirect()->to('administrator/transaksi')->withErrors('Data tidak ditemukan');
         }
 
         $transaction->status = 'success';
@@ -113,7 +113,7 @@ class KeuanganController extends Controller
         $transaction = Transaction::where('trx_hash', $trx_id)->first();
 
         if (!$transaction) {
-            return redirect()->to('admin/transaksi')->withErrors('Data tidak ditemukan');
+            return redirect()->to('administrator/transaksi')->withErrors('Data tidak ditemukan');
         }
 
         $transaction->status = 'failed';

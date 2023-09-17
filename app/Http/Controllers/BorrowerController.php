@@ -21,7 +21,17 @@ class BorrowerController extends Controller
         $user = User::with('latestBorrower')->find($id);
         $pengajuan = Borrower::where('email', Auth::user()->email)->latest()->first();
         $borrowers = Borrower::where('email', Auth::user()->email)->get();
-        $fundings = Funding::with(['fundinglenders.lender.user'])->whereIn('borrower_id', $borrowers->pluck('id'))->get();
+        if (isset($borrowers)) {
+            $fundings = Funding::with(['fundinglenders.lender.user'])->whereIn('borrower_id', $borrowers->pluck('id'))->get();
+            $funding = Funding::with(['fundinglenders.lender.user'])->whereIn('borrower_id', $borrowers->pluck('id'))->first();
+            if (isset($funding)) {
+                $transactions = Transaction::where([
+                    ['funding_id', '=', $funding->id],
+                    ['transaction_type', '=', '7'],
+                ])->get();
+            }
+        }
+        $user->balance = Auth::user()->borrowerAmount();
 
         $data = array(
             'title' => "Aminah | Profile",
@@ -29,6 +39,8 @@ class BorrowerController extends Controller
             'user' => $user,
             'pengajuan' => isset($pengajuan) ? $pengajuan : null,
             'fundings' => isset($fundings) ? $fundings : null,
+            'funding' => isset($funding) ? $funding : null,
+            'transactions' => isset($transactions) ? $transactions : null
         );
 
         if ($request->is('api/*')) {

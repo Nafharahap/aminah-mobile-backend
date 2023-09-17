@@ -30,7 +30,7 @@ class UserController extends Controller
                 'type' => 'success',
                 'title' => 'Tambah',
                 'icon' => 'fa-plus',
-                'href' => url('admin/user/tambah'),
+                'href' => url('administrator/user/tambah'),
                 'class' => 'col-12',
             ],
         ];
