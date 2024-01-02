@@ -223,19 +223,37 @@ class LenderController extends Controller
   }
 
   //invoice view
-  public function withdrawal()
+  public function withdrawal(Request $request)
   {
     if (Auth::user()->sumAmount() == 0) {
+      if ($request->is('api/*')) {
+        return $this->makeJson('Saldo anda kosong', false, 400);
+      }
+
       return redirect('/lender/profile')
         ->with([
           'error' => 'Saldo anda kosong'
         ]);
     }
 
+    $lenderSumAmmount = Auth::user()->sumAmount();
+    $lender = Auth::user()->lender;
+
     $data = array(
       'title' => "Aminah | Invoice Penarikan dana",
       'active' => 'profile',
+      'lenderSumAmmount' => $lenderSumAmmount,
+      'lender' => $lender
     );
+
+    if ($request->is('api/*')) {
+      if ($data) {
+        return $this->makeJson($data);
+      } else {
+        return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+      }
+    }
+
     return view('pages.lender.profile.invoice_tarik', $data);
   }
 
@@ -260,7 +278,9 @@ class LenderController extends Controller
     $transaction = new Transaction();
     $transaction->trx_hash = md5($user_id . now());
     $transaction->transaction_type = '3';
-    $transaction->status = 'requested';
+    $transaction->transaction_date = now();
+    $transaction->transaction_datetime = now();
+    $transaction->status = 'pending';
     $transaction->user_id = $user_id;
     $transaction->lender_id = $user_id;
     $transaction->transaction_amount = $withdrawalAmount;
@@ -268,6 +288,14 @@ class LenderController extends Controller
     $transaction->recepient_account_number = $accountNumber;
     $transaction->recepient_bank_name = $bankName;
     $saving = $transaction->save();
+
+    if ($request->is('api/*')) {
+      if ($saving) {
+        return $this->makeJson('Berhasil mengajukan permintaan penarikan saldo');
+      } else {
+        return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+      }
+    }
 
     if ($saving) {
       return redirect('/lender/profile')

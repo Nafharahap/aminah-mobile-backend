@@ -58,6 +58,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
     Route::get('/checkout/invoice', [CartController::class, 'invoice'])->name('cart.invoice');
     Route::post('/checkout-api', [CartController::class, 'checkOutApi'])->name('cart.checkout.api');
+    Route::get('/transaksi', [TransactionController::class, 'transactionList'])->name('lender.transactionList');
 
     Route::get('/dompet/isi', [TransactionController::class, 'recharge'])->name('lender.recharge');
     Route::post('/dompet/isi', [TransactionController::class, 'storeRecharge'])->name('lender.recharge.store');

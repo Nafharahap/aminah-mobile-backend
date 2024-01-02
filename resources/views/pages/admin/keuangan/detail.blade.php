@@ -59,12 +59,12 @@
             <dt class="col-sm-5">Status Transaksi</dt>
             <dd class="col-sm-7">
               @switch($transaction->status)
-              @case('pending')
-              <span class="badge badge-warning">Menunggu konfirmasi admin</span>
+              @case('waiting')
+              <span class="badge badge-warning">Menunggu pembayaran</span>
               @break
 
-              @case('waiting approval')
-              <span class="badge badge-warning">Menunggu konfirmasi admin</span>
+              @case('pending')
+              <span class="badge badge-info">Menunggu konfirmasi admin</span>
               @break
 
               @case('success')

@@ -30,13 +30,10 @@
                 <td>{{ \Carbon\Carbon::parse($item->transaction_datetime)->toDateString() }}</td>
                 <td>
                   @if ($item->status == 'pending')
-                  <span class="badge badge-warning">menunggu konfirmasi</span>
+                  <span class="badge badge-info">menunggu konfirmasi</span>
                   @endif
                   @if ($item->status == 'waiting')
-                  <span class="badge badge-warning">menunggu konfirmasi</span>
-                  @endif
-                  @if ($item->status == 'waiting approval')
-                  <span class="badge badge-warning">menunggu konfirmasi</span>
+                  <span class="badge badge-warning">menunggu pembayaran</span>
                   @endif
                   @if ($item->status == 'success')
                   <span class="badge badge-success">berhasil</span>
@@ -44,6 +41,8 @@
                 </td>
                 <td>
                   {{ $item->transaction_type == '1' ? 'Pengisian dana lender' : '' }}
+                  {{ $item->transaction_type == '3' ? 'Penarikan Saldo Lender' : '' }}
+                  {{ $item->transaction_type == '4' ? 'Penarikan Pendanaan' : '' }}
                   {{ $item->transaction_type == '6' ? 'Pendanaan lender' : '' }}
                   {{ $item->transaction_type == '7' ? 'Pengembalian pendanaan' : '' }}
                 </td>
