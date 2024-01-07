@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use Mockery\Undefined;
 
 class User extends Authenticatable
 {
@@ -84,10 +85,14 @@ class User extends Authenticatable
       ->orderBy('created_at', 'desc');
   }
 
-  public function lenderTransactions()
+  public function lenderTransactions($typeFilter = null)
   {
+    if (count($typeFilter) == 0) {
+      $typeFilter = ['1', '3', '6'];
+    }
+
     return $this->hasMany(Transaction::class)
-      ->whereIn('transaction_type', ['1', '3', '6'])
+      ->whereIn('transaction_type', $typeFilter)
       ->whereIn('status', ['success', 'pending'])
       ->orderBy('created_at', 'desc');
   }

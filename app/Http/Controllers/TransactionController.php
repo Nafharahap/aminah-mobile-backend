@@ -124,13 +124,36 @@ class TransactionController extends Controller
 
   public function transactionList(Request $request)
   {
-    $lenderTransactions = Auth::user()->lenderTransactions()->paginate(10);
+    $type = $request->query('type');
+    $type = $type ? explode(',', $type) : [];
+
+    $lenderTransactions = Auth::user()->lenderTransactions($type)->paginate(10);
 
     $data = array(
       'title' => 'Aminah | Pembayaran',
       'active' => 'profile',
       'page' => 'Pembayaran',
       'lenderTransactions' => $lenderTransactions
+    );
+
+    if ($request->is('api/*')) {
+      if ($data) {
+        return $this->makeJson($data);
+      } else {
+        return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+      }
+    }
+  }
+
+  public function transactionDetail(Request $request, $trx_hash)
+  {
+    $detailTransaction = Transaction::where('trx_hash', $trx_hash)->first();
+
+    $data = array(
+      'title' => 'Aminah | Pembayaran',
+      'active' => 'profile',
+      'page' => 'Pembayaran',
+      'detailTransaction' => $detailTransaction
     );
 
     if ($request->is('api/*')) {

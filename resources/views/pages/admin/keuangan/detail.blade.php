@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
   @include('layouts.admin.navigation')
-  @if (isset($transaction->transaction_type) && in_array($transaction->transaction_type, ['1', '7']))
+  @if (isset($transaction->transaction_type) && in_array($transaction->transaction_type, ['1', '3', '4', '6', '7']))
   <div class="row">
     <div class="col mt-4">
       <div class="card">

@@ -37,6 +37,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/saldo/tarik/invoice', [BorrowerController::class, 'withdrawal'])->name('borrower.withdrawal');
     Route::post('/saldo/tarik', [BorrowerController::class, 'storeWithdrawal'])->name('borrower.withdrawal.store');
     Route::get('/pendanaan/bayar/{funding}', [BorrowerController::class, 'returnFunding'])->name('borrower.return');
+    Route::get('/pendanaan/bayar/lender/{borrower_id}', [BorrowerController::class, 'returnFundingLender'])->name('borrower.return.lender');
     Route::get('/pendanaan/bayar/detail/{trx_hash}', [BorrowerController::class, 'returnFundingDetail'])->name('borrower.return.detail');
     Route::post('/pendanaan/bayar', [BorrowerController::class, 'storeReturnFunding'])->name('borrower.return.store');
   });
@@ -59,6 +60,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/checkout/invoice', [CartController::class, 'invoice'])->name('cart.invoice');
     Route::post('/checkout-api', [CartController::class, 'checkOutApi'])->name('cart.checkout.api');
     Route::get('/transaksi', [TransactionController::class, 'transactionList'])->name('lender.transactionList');
+    Route::get('/transaksi/{trx_hash}', [TransactionController::class, 'transactionDetail'])->name('lender.transactionDetail');
 
     Route::get('/dompet/isi', [TransactionController::class, 'recharge'])->name('lender.recharge');
     Route::post('/dompet/isi', [TransactionController::class, 'storeRecharge'])->name('lender.recharge.store');

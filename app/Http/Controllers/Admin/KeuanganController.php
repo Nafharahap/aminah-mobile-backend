@@ -23,7 +23,7 @@ class KeuanganController extends Controller
       ],
     ];
 
-    $transactions = Transaction::whereIn('transaction_type', ['1', '3', '4', '6', '7'])->orderBy('created_at', 'desc')->get();
+    $transactions = Transaction::whereIn('transaction_type', ['1', '3', '4', '6', '7'])->orderBy('updated_at', 'desc')->get();
     $transactions = $transactions->filter(function ($item) {
       if (!($item->transaction_type == '7' && $item->status == 'waiting')) {
         return $item;

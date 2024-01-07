@@ -281,6 +281,27 @@ class BorrowerController extends Controller
     return view('pages.borrower.return_funding', $data);
   }
 
+  public function returnFundingLender(Request $request, $borrower_id)
+  {
+    $transactions = Transaction::where('transaction_type', '7')->where('user_id', $borrower_id)->with('user')->orderBy('transaction_date', 'Asc')->get();
+
+    $data = array(
+      'title' => "Aminah | Pengembalian pendanaan",
+      'active' => 'profile',
+      'transactions' => $transactions,
+    );
+
+    if ($request->is('api/*')) {
+      if ($data) {
+        return $this->makeJson($data);
+      } else {
+        return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+      }
+    }
+
+    return view('pages.borrower.return_funding', $data);
+  }
+
   public function returnFundingDetail(Request $request, $trx_hash)
   {
     $transaction = Transaction::where('trx_hash', $trx_hash)->where('transaction_type', '7')->first();
