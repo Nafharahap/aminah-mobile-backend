@@ -91,7 +91,7 @@ class User extends Authenticatable
       $typeFilter = ['1', '3', '6'];
     }
 
-    return $this->hasMany(Transaction::class)
+    return $this->hasMany(Transaction::class)->with('funding',  'funding.borrower')
       ->whereIn('transaction_type', $typeFilter)
       ->whereIn('status', ['success', 'pending'])
       ->orderBy('created_at', 'desc');
