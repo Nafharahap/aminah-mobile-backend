@@ -24,6 +24,14 @@ class CartController extends Controller
       'cartItems' => $cart,
     );
 
+    if ($request->is('api/*')) {
+      if ($data) {
+        return $this->makeJson($data);
+      } else {
+        return $this->makeJson('Maaf gagal, coba lagi nanti', false, 400);
+      }
+    }
+
     return view('pages.lender.cart', $data);
   }
 
@@ -42,12 +50,22 @@ class CartController extends Controller
       if ($existCart) {
         if ($sisaUnit <= $existCart->quantity) {
           session()->flash('error', 'Jumlah unit tidak cukup, gagal tambah keranjang !');
+          
+          if ($request->is('api/*')) {
+            return $this->makeJson('Jumlah unit tidak cukup, gagal tambah keranjang !', false, 400);
+          } 
+
           return redirect()->route('cart.list');
         }
       }
 
       if ($sisaUnit <= $request->quantity) {
         session()->flash('error', 'Jumlah unit tidak cukup, gagal tambah keranjang !');
+
+        if ($request->is('api/*')) {
+          return $this->makeJson('Jumlah unit tidak cukup, gagal tambah keranjang !', false, 400);
+        }
+
         return redirect()->route('cart.list');
       }
     }
@@ -63,6 +81,11 @@ class CartController extends Controller
       'associatedModel' => $funding,
     ]);
     session()->flash('success', 'Berhasil tambah ke keranjang !');
+
+    if ($request->is('api/*')) {
+      return $this->makeJson('Berhasil tambah ke keranjang !');
+    }
+
     return redirect()->route('cart.list');
   }
 
@@ -88,14 +111,27 @@ class CartController extends Controller
           ]
         );
         session()->flash('success', 'Berhasil update keranjang !');
+
+        if ($request->is('api/*')) {
+          return $this->makeJson('Berhasil update keranjang !');
+        }
+
         return redirect()->route('cart.list');
       } else {
         session()->flash('error', 'Jumlah unit tidak cukup, gagal update keranjang !');
+
+        if ($request->is('api/*')) {
+          return $this->makeJson('Jumlah unit tidak cukup, gagal update keranjang !', false, 400);
+        }
         return redirect()->route('cart.list');
       }
     }
 
     session()->flash('error', 'Gagal update keranjang, coba lagi nanti !');
+
+    if ($request->is('api/*')) {
+      return $this->makeJson('Gagal update keranjang, coba lagi nanti !', false, 400);
+    }
 
     return redirect()->route('cart.list');
   }
@@ -107,16 +143,24 @@ class CartController extends Controller
     \Cart::session($userID)->remove($request->id);
     session()->flash('success', 'Berhasil hapus unit dari keranjang !');
 
+    if ($request->is('api/*')) {
+      return $this->makeJson('Berhasil hapus unit dari keranjang !');
+    }
+
     return redirect()->route('cart.list');
   }
 
-  public function clearAllCart()
+  public function clearAllCart(Request $request)
   {
     $userID = Auth::user()->id;
 
     \Cart::session($userID)->clear();
 
     session()->flash('success', 'Berhasil hapus keranjang !');
+
+    if ($request->is('api/*')) {
+      return $this->makeJson('Berhasil hapus keranjang !');
+    }
 
     return redirect()->route('cart.list');
   }
